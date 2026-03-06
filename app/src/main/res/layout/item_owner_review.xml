@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:elevation="4dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="8dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+            
+            <TextView
+                android:id="@+id/tvUserName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Kullanıcı Adı"
+                android:textStyle="bold"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:id="@+id/tvDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="12.10.2025"
+                android:textSize="12sp"
+                android:textColor="#757575"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvRating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="H: 4 L: 5 F: 3"
+            android:textColor="#FF9800"
+            android:textSize="14sp"
+            android:layout_marginTop="4dp"/>
+
+        <TextView
+            android:id="@+id/tvComment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Yemekler harikaydı..."
+            android:layout_marginTop="8dp"
+            android:textSize="15sp"
+            android:textColor="#333333"/>
+
+        <!-- Cevap Kısmı -->
+        <LinearLayout
+            android:id="@+id/layoutReply"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#F0F8FF"
+            android:padding="8dp"
+            android:layout_marginTop="12dp"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sizin Cevabınız:"
+                android:textStyle="bold"
+                android:textColor="#2196F3"
+                android:textSize="12sp"/>
+            
+            <TextView
+                android:id="@+id/tvOwnerReply"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Teşekkür ederiz..."
+                android:layout_marginTop="4dp"
+                android:textColor="#555555"/>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnReply"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Cevapla"
+            android:layout_marginTop="12dp"
+            android:backgroundTint="#2196F3"/>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

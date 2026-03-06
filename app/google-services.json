@@ -1,0 +1,76 @@
+{
+  "project_info": {
+    "project_number": "174392105040",
+    "project_id": "restoranapp-c16f7",
+    "storage_bucket": "restoranapp-c16f7.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:174392105040:android:5b337dcc7ebad2c724d955",
+        "android_client_info": {
+          "package_name": "com.ebco.restaviewrestorangirisi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "174392105040-fbv7955fo0u8r2mcg3p42pkotlf7q7qi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAsR3mLlyK9XouR8BQZkj4AD1lbtHlYL8U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "174392105040-fbv7955fo0u8r2mcg3p42pkotlf7q7qi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:174392105040:android:61aa51054b8cc75224d955",
+        "android_client_info": {
+          "package_name": "com.ebco.restoranapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "174392105040-dnj5sd6bi5h0finh62ukta3l07pbtiuh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ebco.restoranapp",
+            "certificate_hash": "45cfa15f8625cc5bcbe96497958fab0ab601dc87"
+          }
+        },
+        {
+          "client_id": "174392105040-fbv7955fo0u8r2mcg3p42pkotlf7q7qi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAsR3mLlyK9XouR8BQZkj4AD1lbtHlYL8U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "174392105040-fbv7955fo0u8r2mcg3p42pkotlf7q7qi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
