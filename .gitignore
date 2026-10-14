@@ -19,3 +19,22 @@ node_modules/
 firebase-debug.log
 security-tests/audit.json
 
+# Private credentials and signing material
+.env
+.env.*
+!.env.example
+!.env.template
+**/.env
+**/.env.*
+!**/.env.example
+!**/.env.template
+key.properties
+*.jks
+*.keystore
+*.p12
+*.pfx
+id_rsa
+id_ed25519
+*-adminsdk-*.json
+service-account*.json
+.secret.local
