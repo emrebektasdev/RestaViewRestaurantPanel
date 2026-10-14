@@ -60,7 +60,8 @@ class RestaViewFirestoreHelper {
 
     // YENİ: Resim Yükleme Fonksiyonu (Daha Detaylı Hata Ayıklama İçin Güncellendi)
     fun uploadImage(imageUri: Uri, onSuccess: (String) -> Unit, onFailure: (Exception) -> Unit) {
-        val ref = storage.reference.child("restaurant_images/${UUID.randomUUID()}.jpg")
+        val uid = auth.currentUser?.uid ?: return onFailure(IllegalStateException("Giriş yapmalısınız."))
+        val ref = storage.reference.child("restaurant_images/$uid/${UUID.randomUUID()}.jpg")
         
         // 1. Adım: Dosyayı Yükle
         ref.putFile(imageUri)
@@ -103,34 +104,15 @@ class RestaViewFirestoreHelper {
             .addOnSuccessListener { onSuccess() }
     }
 
-    // YENİ: Yorumları getir
     fun getReviews(restaurantId: String, onSuccess: (List<Review>) -> Unit, onFailure: (Exception) -> Unit) {
-        restaurantsCollection.document(restaurantId).get()
-            .addOnSuccessListener { snapshot ->
-                val restaurant = snapshot.toObject(Restaurant::class.java)
-                onSuccess(restaurant?.reviews ?: emptyList())
-            }
+        restaurantsCollection.document(restaurantId).collection("reviews").get()
+            .addOnSuccessListener { onSuccess(it.toObjects(Review::class.java)) }
             .addOnFailureListener { onFailure(it) }
     }
 
-    // YENİ: Yoruma cevap ver
     fun replyToReview(restaurantId: String, reviewId: String, reply: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
-        restaurantsCollection.document(restaurantId).get()
-            .addOnSuccessListener { snapshot ->
-                val restaurant = snapshot.toObject(Restaurant::class.java)
-                if (restaurant != null) {
-                    val updatedReviews = restaurant.reviews.map { review ->
-                        if (review.id == reviewId) {
-                            review.copy(ownerReply = reply)
-                        } else {
-                            review
-                        }
-                    }
-                    restaurantsCollection.document(restaurantId).update("reviews", updatedReviews)
-                        .addOnSuccessListener { onSuccess() }
-                        .addOnFailureListener { onFailure(it) }
-                }
-            }
-            .addOnFailureListener { onFailure(it) }
+        restaurantsCollection.document(restaurantId).collection("reviews").document(reviewId)
+            .update("ownerReply", reply)
+            .addOnSuccessListener { onSuccess() }.addOnFailureListener { onFailure(it) }
     }
 }

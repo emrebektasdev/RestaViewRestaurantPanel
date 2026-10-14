@@ -1,0 +1,74 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function owner(id) {
+      return signedIn() && get(/databases/$(database)/documents/restaurants/$(id)).data.ownerId == request.auth.uid;
+    }
+    function text(v, max) { return v is string && v.size() <= max; }
+    function rating(v) { return v is int && v >= 1 && v <= 5; }
+    match /users/{uid} {
+      allow read, delete: if signedIn() && request.auth.uid == uid;
+      allow create, update: if signedIn() && request.auth.uid == uid
+        && request.resource.data.uid == uid
+        && request.resource.data.keys().hasOnly(['uid', 'name', 'email', 'registerDate', 'userType'])
+        && text(request.resource.data.name, 120) && text(request.resource.data.email, 320);
+    }
+    match /restaurants/{id} {
+      allow read: if true;
+      allow create: if signedIn()
+        && request.resource.data.ownerId == request.auth.uid && request.resource.data.id == id
+        && request.resource.data.keys().hasOnly(['id', 'ownerId', 'name', 'description', 'city',
+          'address', 'tableCount', 'imageUrl', 'imageResId', 'lat', 'lng', 'hygieneScore',
+          'tasteScore', 'priceScore', 'rwScore', 'reviews'])
+        && request.resource.data.get('reviews', []) == []
+        && request.resource.data.get('hygieneScore', 0) == 0
+        && request.resource.data.get('tasteScore', 0) == 0
+        && request.resource.data.get('priceScore', 0) == 0
+        && request.resource.data.get('rwScore', 0) == 0
+        && validRestaurant();
+      allow update: if owner(id) && validRestaurant()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(
+          ['name', 'description', 'city', 'address', 'tableCount', 'imageUrl', 'lat', 'lng']);
+      // Deletion and legacy review migration require trusted administrative tooling.
+      allow delete: if false;
+      function validRestaurant() {
+        let d = request.resource.data;
+        return text(d.name, 160) && d.name.size() > 0 && text(d.description, 4000)
+          && text(d.city, 120) && text(d.address, 500) && text(d.imageUrl, 2000)
+          && d.tableCount is int && d.tableCount >= 1 && d.tableCount <= 500;
+      }
+      match /reviews/{reviewId} {
+        allow read: if true;
+        allow create: if signedIn() && exists(/databases/$(database)/documents/restaurants/$(id))
+          && request.resource.data.keys().hasOnly(['id', 'restaurantId', 'userId', 'userName',
+            'hygieneRating', 'tasteRating', 'priceRating', 'comment', 'date', 'isPositive', 'ownerReply'])
+          && request.resource.data.id == reviewId && request.resource.data.restaurantId == id
+          && request.resource.data.userId == request.auth.uid
+          && text(request.resource.data.userName, 120) && text(request.resource.data.comment, 4000)
+          && text(request.resource.data.date, 40) && request.resource.data.isPositive is bool
+          && rating(request.resource.data.hygieneRating) && rating(request.resource.data.tasteRating)
+          && rating(request.resource.data.priceRating) && request.resource.data.ownerReply == '';
+        allow update: if owner(id)
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['ownerReply'])
+          && text(request.resource.data.ownerReply, 4000);
+        allow delete: if signedIn() && resource.data.userId == request.auth.uid;
+      }
+    }
+    match /requests/{id} {
+      allow read: if signedIn() && (resource.data.get('userId', '') == request.auth.uid
+        || owner(resource.data.restaurantId));
+      allow create: if signedIn() && request.resource.data.keys().hasOnly(
+          ['id', 'userId', 'restaurantId', 'tableName', 'requestType', 'note', 'status', 'timestamp'])
+        && request.resource.data.id == id && request.resource.data.userId == request.auth.uid
+        && exists(/databases/$(database)/documents/restaurants/$(request.resource.data.restaurantId))
+        && request.resource.data.status == 'pending'
+        && text(request.resource.data.tableName, 80) && text(request.resource.data.requestType, 80)
+        && text(request.resource.data.note, 2000) && request.resource.data.timestamp is int;
+      allow update: if owner(resource.data.restaurantId)
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status'])
+        && resource.data.status == 'pending' && request.resource.data.status == 'completed';
+      allow delete: if false;
+    }
+  }
+}
