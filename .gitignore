@@ -13,3 +13,9 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+node_modules/
+*.log
+firebase-debug.log
+security-tests/audit.json
+
